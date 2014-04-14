@@ -1,3 +1,10 @@
+def create_authorized_key(key_string):
+    """Takes a string as-is from an authorized_keys or id_*.pub file
+       and creates an AuthorizedKey object out of it"""
+
+    key_type,key_text,key_comment = key_string.split()
+    return AuthorizedKey(key_type,key_text,key_comment)
+
 class AuthorizedKey:
     def __init__(self,key_type,key_text,key_comment):
         self._validate_key_type(key_type)
