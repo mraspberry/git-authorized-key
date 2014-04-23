@@ -1,6 +1,11 @@
+## added for python 2 and python 3 compatibility
+## does nothing on python 3
+from __future__ import print_function
+
 import authkey
 import pygit2
 import shutil
+import socket
 import sys
 from datetime import timedelta,datetime
 from glob import iglob
@@ -15,7 +20,10 @@ _FAILURE = 1
 _DEFAULT_TTL = 1440 # 1 day in minutes
 _CONFIG_SECT = 'GLOBAL'
 _CONFIG_FILENAME = 'git-authorized-keys.conf'
-_CONFIG_DEFAULTS = { 'ttl' : _DEFAULT_TTL }
+_CONFIG_DEFAULTS = {
+        'ttl' : _DEFAULT_TTL,
+        'host' : socket.gethostname(),
+        }
 
 def _check_version():
     """Function to check that we're on python 2.6 or greater"""
@@ -66,6 +74,7 @@ def _clone_repo(url,path,ttl):
 
 def main():
     username = sys.argv[1]
+    _CONFIG_DEFAULTS['user'] = username
     configfile = _get_config_file()
     config = configparser.ConfigParser(_CONFIG_DEFAULTS)
     with open(configfile) as fh_config:
@@ -73,10 +82,10 @@ def main():
 
     checkout_url,checkout_path,ttl = _get_repo_info(config)
     repo = _clone_repo(checkout_url,checkout_path,ttl)
-    key_filepattern = os.path.join(repo.path,username,'*.pub')
+    filepattern = config.get(_CONFIG_SECT,'keyfile_location')
+    key_filepattern = os.path.join(checkout_path,filepattern)
     for pubkey_file in glob.iglob(key_filepattern):
         with open(pubkey_file) as fh_pubkey:
             key_str = fh_pubkey.read()
         key = authkey.create_authorized_key(key_str)
         print(key)
-
