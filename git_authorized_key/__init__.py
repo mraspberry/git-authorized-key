@@ -2,7 +2,8 @@
 ## does nothing on python 3
 from __future__ import print_function
 
-import authkey
+import git_authorized_key.authkey
+import os
 import pygit2
 import shutil
 import socket
@@ -18,7 +19,7 @@ else:
 
 _FAILURE = 1
 _DEFAULT_TTL = 1440 # 1 day in minutes
-_CONFIG_SECT = 'GLOBAL'
+_CONFIG_SECT = 'global'
 _CONFIG_FILENAME = 'git-authorized-keys.conf'
 _CONFIG_DEFAULTS = {
         'ttl' : _DEFAULT_TTL,
@@ -36,7 +37,7 @@ def _get_repo_info(configobj,sect=_CONFIG_SECT):
     check_loc = configobj.get(sect,'checkout_path')
     check_loc = os.path.expandvars(check_loc)
     ttl = configobj.getint(sect,'checkout_ttl')
-    ttl = datetime.timedelta(minutes=ttl)
+    ttl = timedelta(minutes=ttl)
     return (repo_url,check_loc,ttl)
 
 def _get_config_file():
@@ -84,7 +85,7 @@ def main():
     repo = _clone_repo(checkout_url,checkout_path,ttl)
     filepattern = config.get(_CONFIG_SECT,'keyfile_location')
     key_filepattern = os.path.join(checkout_path,filepattern)
-    for pubkey_file in glob.iglob(key_filepattern):
+    for pubkey_file in iglob(key_filepattern):
         with open(pubkey_file) as fh_pubkey:
             key_str = fh_pubkey.read()
         key = authkey.create_authorized_key(key_str)
