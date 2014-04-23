@@ -5,7 +5,7 @@ def create_authorized_key(key_string):
     key_type,key_text,key_comment = key_string.split()
     return AuthorizedKey(key_type,key_text,key_comment)
 
-class AuthorizedKey:
+class AuthorizedKey (object):
     def __init__(self,key_type,key_text,key_comment):
         self._validate_key_type(key_type)
         self.key_type = key_type
