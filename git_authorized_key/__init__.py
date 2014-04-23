@@ -33,7 +33,7 @@ def _check_version():
 
 def _get_repo_info(configobj,sect=_CONFIG_SECT):
     repo_url = configobj.get(sect,'repo_url')
-    check_loc = configobj.get(sect,'checkout_directory')
+    check_loc = configobj.get(sect,'checkout_path')
     check_loc = os.path.expandvars(check_loc)
     ttl = configobj.getint(sect,'checkout_ttl')
     ttl = datetime.timedelta(minutes=ttl)
