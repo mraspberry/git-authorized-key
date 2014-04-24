@@ -1,0 +1,18 @@
+## the section definition
+## Currently "global" is the only used section
+## but eventually there will be support for different
+## settings per user to be authenticated
+[global]
+## repo_url is the checkout URL for the git repo
+repo_url = git://example.org/repo.git
+## checkoui_path is the local path to clone the repository to
+checkout_path = /tmp/repo.git
+## checkout_ttl is the time in minutes
+## the repo should be considered valid
+## after that time the local copy will be cleared and re-cloned
+checkout_ttl = 60
+## keyfile_location is the path, relative to the checkout_path
+## of the public keys. %(user)s and %(host)s will be replaced
+## with the user being authenticated and the hostname of the machine
+## This option supports shell-style expansion as well
+keyfile_location = %(host)s/%(user)s/*.pub
